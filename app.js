@@ -6,6 +6,9 @@
 const express= require('express')
 //criando um objeto express na variável app
 const app= express()
+
+const session = require('express-session')
+
 //configurando a ejs
 app.set('view engine', 'ejs')
 //definindo o caminho das views ejs
@@ -18,6 +21,12 @@ const dbConnection= require('./dbConnection')
 
 app.use(express.json())
 app.use(express.urlencoded({extended:true}))
+// confirguração express-session
+app.use(session({
+    secret: '~kXs4d-mh<CXC3v=', //chave de segurança usada na assinatura dos identificadores da sessão
+    resave: false, //otimiza para que a sessão não seja salva novamente
+    saveUninitialized: false //otimiza o uso do aramzenamento no servidor
+}))
 
 //criando nossa primeira rota
 app.get('/', async (req, res) => {
@@ -40,8 +49,13 @@ app.get('/noticias', async (req, res) => {
 })
 
 //criando a rota para admin
-app.get('/admin', (req, res) => {
-    res.render("admin/form_add_noticia", {title: "admin"})
+app.get('/admin', async (req, res) => {
+    if(req.session.autorizado){
+        res.render("admin/form_add_noticia", {autorizado: req.session.autorizado})
+    } else {
+        res.render('admin/login')
+    }
+    
 })
 
 app.post('/admin/salvar-noticia', async (req, res) =>{
@@ -49,6 +63,22 @@ app.post('/admin/salvar-noticia', async (req, res) =>{
     await dbConnection.query('INSERT INTO noticias(titulo, conteudo) VALUES($1,$2)', [titulo, conteudo], (err, result) =>{
         res.redirect('/noticias')
     })
+})
+
+//rota responsável por autenticar o usuário
+app.post('/admin/autenticar', async(req, res) =>{
+    const {usuario, senha} = req.body
+
+    if(usuario == 'root' && senha == 'cellep1234'){
+        req.session.autorizado = true
+    }
+
+    res.redirect('/admin')
+})
+
+app.get('/admin/sair', async (req, res) => {
+    req.session.destroy((err) => {})
+    res.redirect('/admin')
 })
 
 //iniciando o servidor na porta 3000

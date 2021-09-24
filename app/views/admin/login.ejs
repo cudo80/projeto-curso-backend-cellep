@@ -1,0 +1,23 @@
+<%- include('../common/header') %>
+
+<%- include('../common/menu') %>
+
+<main class="form-signin">
+    
+    <form action="/admin/autenticar" method="POST">
+        <h1 class="mb-3 text-center">Login</h1>
+        <div class="form-floating">
+            <input name="usuario" id="usuario" class="form-control" placeholder="Usuário" autocomplete="off" type="text" required>
+            <label for="usuario">Usuário</label>
+        </div>
+        <div class="form-floating">
+            <input name="senha" id="senha" class="form-control" placeholder="Senha" autocomplete="off" type="password" required>
+            <label for="senha">Senha</label>
+        </div>
+
+        <button class="btn btn-primary btn-lg w-100" type="submit">Entrar</button>
+    </form>
+    
+
+</main>
+<%- include('../common/footer') %>
