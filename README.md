@@ -12,6 +12,7 @@ Projeto blog de notícias a partir do curso Desenvolvimento Web Cellep Estação
 // Postgres
 
 For running app: https://aplicacao-node-cudo.herokuapp.com/
-Login infos:
+
+// Login infos:
 login: root
 senha: cellep1234
